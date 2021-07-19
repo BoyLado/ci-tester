@@ -1,129 +1,49 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-// require "vendor/autoload.php";
+require "vendor/autoload.php";
 
 // use PhpOffice\PhpSpreadsheet\Spreadsheet;
 // use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class SpreadsheetLibrary {
 
-	public function readFile($excel_file, $sheets = [])
+	public function readFile($excelFile, $sheets = [])
 	{
-		$reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($excel_file);
+		$reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($excelFile);
 		
 		(count($sheets) > 0)?$reader->setLoadSheetsOnly($sheets):FALSE;
 		$reader->setReadDataOnly(true);
-		$spreadsheet = $reader->load($excel_file);
+		$spreadsheet = $reader->load($excelFile);
 		$sheetData = $spreadsheet->getActiveSheet()->toArray();
 		(count($sheetData) > 1)?array_shift($sheetData):FALSE;
 
 		return $sheetData;
 	}
 
-	public function uploadApplications($file_csv)
+	public function checkData($data, $date = null)
 	{
-		/**  Create a new Reader of the type that has been identified  **/
-		$reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($file_csv);
-		/**  **/
-		$reader->setLoadSheetsOnly(["Applications (Database)"]);
-		/** Read only **/
-		$reader->setReadDataOnly(true);
-		/** load file **/
-		$spreadsheet = $reader->load($file_csv);
-		/** get active cells **/
-		$sheetData = $spreadsheet->getActiveSheet()->toArray();
-		$arrData = [];
-		foreach ($sheetData as $key => $value) 
+		$arr_val = ["NULL","null","","N/A","n/a","NA","na"];
+		if($date == null)
 		{
-			if($key != 0)
-			{
-				$arr = [];
-				foreach ($sheetData[$key] as $k => $v) 
-				{
-					if($k == 1)
-					{
-						$valDate = date("Y-m-d", ($v - 25569)*86400);
-						array_push($arr,$valDate);
-					}
-					else
-					{
-						array_push($arr,$v);
-					}
-				}
-				array_push($arrData,$arr);
-			}
+			$result = (in_array($data,$arr_val))? null : $data;
 		}
-
-		return (count($arrData) > 0)? $arrData : null;
+		elseif($date == "d")
+		{
+			$result = (in_array($data,$arr_val))? null : date("Y-m-d", ($data - 25569)*86400);
+		}
+		else
+		{
+			$result = "[Error] Unknown parameter " . $date;
+		}
+		
+		return $result;
 	}
 
-	public function uploadApplicationDetails($file_csv)
+	public function getSheets($excelFile)
 	{
-		/**  Identify the type of $inputFileName  **/
-		// $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($file_csv);
-		/**  Create a new Reader of the type that has been identified  **/
-		$reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($file_csv);
-		/**  **/
-		$reader->setLoadSheetsOnly(["Application Details (Database)"]);
-		/** Read only **/
-		$reader->setReadDataOnly(true);
-		/** load file **/
-		$spreadsheet = $reader->load($file_csv);
-		/** get active cells **/
-		$sheetData = $spreadsheet->getActiveSheet()->toArray();
-
-		$arrData = [];
-		foreach ($sheetData as $key => $value) 
-		{
-			if($key != 0)
-			{
-				$arr = [];
-				foreach ($sheetData[$key] as $k => $v) 
-				{
-					array_push($arr,$v);
-				}
-				
-				array_push($arrData,$arr);
-
-			}
-		}
-
-		return (count($arrData) > 0)? $arrData : null;
+		
 	}
 
-	public function uploadApplicationCustomers($file_csv)
-	{
-		/**  Identify the type of $inputFileName  **/
-		// $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($file_csv);
-		/**  Create a new Reader of the type that has been identified  **/
-		$reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($file_csv);
-		/**  **/
-		$reader->setLoadSheetsOnly(["Application Customer (Database)"]);
-		/** Read only **/
-		$reader->setReadDataOnly(true);
-		/** load file **/
-		$spreadsheet = $reader->load($file_csv);
-		/** get active cells **/
-		$sheetData = $spreadsheet->getActiveSheet()->toArray();
-
-		$arrData = [];
-		foreach ($sheetData as $key => $value) 
-		{
-			if($key != 0)
-			{
-				$arr = [];
-				foreach ($sheetData[$key] as $k => $v) 
-				{
-					array_push($arr,$v);
-				}
-				
-				array_push($arrData,$arr);
-
-			}
-		}
-
-		return (count($arrData) > 0)? $arrData : null;
-	}
 
 }

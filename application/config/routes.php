@@ -52,3 +52,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+
+$route['test-excel'] = 'NavigationController/test_excel';
+$route['test-return-sheets'] = 'Welcome/returnSheets';
+$route['test-upload-excel'] = 'Welcome/testUploadExcel';

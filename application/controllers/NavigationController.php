@@ -29,4 +29,9 @@ class NavigationController extends CI_Controller {
 	{
 		echo "Hello World";
 	}
+
+	public function test_excel()
+	{
+		$this->slice->view('test_excel');
+	}
 }
